@@ -1,4 +1,4 @@
-from series.base_series import Series
+from backend.series.base_series import Series
 
 class FedFundsSeries(Series):
     def __init__(self, start_date, end_date):

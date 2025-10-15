@@ -22,6 +22,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from series.unemployment import UnemploymentSeries
 from series.cpi import CPISeries
 from series.fed_funds import FedFundsSeries
+from series.gdp import GDPSeries
 
 
 
@@ -43,10 +44,12 @@ print(unrate_insight_data)
 print(unrate_ai_insight_data)
 
 
-unrate_data.plot(title="Unemployment Rate (UNRATE)", figsize=(10, 5))
+# Get dynamic axis labels
+unrate_labels = unrate.get_axis_labels()
+unrate_data.plot(title=unrate_labels['title'], figsize=(10, 5))
 
-plt.xlabel("Date") # just labels
-plt.ylabel("Percent") # just labels
+plt.xlabel(unrate_labels['x_label']) # dynamic labels
+plt.ylabel(unrate_labels['y_label']) # dynamic labels
 plt.grid(True) # makes grid
 plt.show() # displays plot
 
@@ -68,10 +71,12 @@ print(cpi_insight_data)
 print(cpi_ai_insight_data)
 
 
-cpi_data.plot(title="CPI (CPIAUCSL)", figsize=(10, 5))
+# Get dynamic axis labels
+cpi_labels = cpi.get_axis_labels()
+cpi_data.plot(title=cpi_labels['title'], figsize=(10, 5))
 
-plt.xlabel("Date") # just labels
-plt.ylabel("Percent") # just labels
+plt.xlabel(cpi_labels['x_label']) # dynamic labels
+plt.ylabel(cpi_labels['y_label']) # dynamic labels
 plt.grid(True) # makes grid
 plt.show() # displays plot
 
@@ -92,12 +97,43 @@ print(fed_funds_insight_data)
 print(fed_funds_ai_insight_data)
 
 
-fed_funds_data.plot(title="FED FUNDS (FEDFUNDS)", figsize=(10, 5))
+# Get dynamic axis labels
+fed_funds_labels = fed_funds.get_axis_labels()
+fed_funds_data.plot(title=fed_funds_labels['title'], figsize=(10, 5))
 
-plt.xlabel("Date") # just labels
-plt.ylabel("Percent") # just labels
+plt.xlabel(fed_funds_labels['x_label']) # dynamic labels
+plt.ylabel(fed_funds_labels['y_label']) # dynamic labels
 plt.grid(True) # makes grid
 plt.show() # displays plot
+
+# GDP Data -----------------------------------------------------------------------------------
+print("\nGDP DATA -------------------\n")
+gdp = GDPSeries("2010-01-01", "2025-04-01")
+gdp_data = gdp.fetch_data()
+analyzer = Trendanalyzer(gdp_data)
+gdp_trend_data = analyzer.compute_trend()
+
+
+# generate_insight takes trend data
+# generate_ai_insight takes raw data
+gdp_insight_data = generate_insight(gdp_trend_data, "GDP")
+gdp_ai_insight_data = generate_ai_insight(gdp_data, "GDP")
+
+print(gdp_insight_data)
+print(gdp_ai_insight_data)
+
+
+# Get dynamic axis labels
+gdp_labels = gdp.get_axis_labels()
+gdp_data.plot(title=gdp_labels['title'], figsize=(10, 5))
+
+plt.xlabel(gdp_labels['x_label']) # dynamic labels
+plt.ylabel(gdp_labels['y_label']) # dynamic labels
+plt.grid(True) # makes grid
+plt.show() # displays plot
+
+
+
 
 
 
