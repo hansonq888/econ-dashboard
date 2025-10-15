@@ -122,7 +122,7 @@ export default function Dashboard() {
       
       // Update cache stats (get from backend)
       try {
-        const response = await fetch('http://127.0.0.1:8000/cache/stats');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/cache/stats`);
         const stats = await response.json();
         setCacheStats(stats);
       } catch (error) {
@@ -133,7 +133,7 @@ export default function Dashboard() {
 
       // Fetch overall AI insight (optional)
       try {
-        const res = await fetch(`http://127.0.0.1:8000/insights/overall?start=${start}&end=${end}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/insights/overall?start=${start}&end=${end}`);
         const payload = await res.json();
         setOverallInsight(payload);
       } catch (e) {
@@ -207,7 +207,7 @@ export default function Dashboard() {
 
     // Update cache stats (get from backend)
     try {
-      const response = await fetch('http://127.0.0.1:8000/cache/stats');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/cache/stats`);
       const stats = await response.json();
       setCacheStats(stats);
     } catch (error) {
@@ -218,7 +218,7 @@ export default function Dashboard() {
 
     // Refresh overall AI insight
     try {
-      const res = await fetch(`http://127.0.0.1:8000/insights/overall?start=${start}&end=${end}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/insights/overall?start=${start}&end=${end}`);
       const payload = await res.json();
       setOverallInsight(payload);
     } catch (e) {
