@@ -1,7 +1,7 @@
 import axios from "axios";
 import { dataCache } from "../utils/cache";
 
-const API_BASE = "http://127.0.0.1:8000"; // FastAPI local URL
+const API_BASE = "https://fred-watch-api.onrender.com"; // FastAPI local URL
 
 export async function fetchSeries(seriesName, start, end, useCache = true, includeAI = true) {
   // Check frontend cache first
