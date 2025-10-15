@@ -35,7 +35,8 @@ def is_origin_allowed(origin: str) -> bool:
         r"http://localhost:\d+",
         r"http://127\.0\.0\.1:\d+",
         r"https://.*\.vercel\.app$",
-        r""
+        r"https://macroboard\.org$",
+        r"https://www\.macroboard\.org$",
         # Add your custom domain here: r"https://your-dashboard\.com$"
     ]
     return any(re.match(pattern, origin) for pattern in allowed_patterns)
