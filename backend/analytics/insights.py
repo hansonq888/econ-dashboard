@@ -3,13 +3,23 @@ from openai import OpenAI
 import os, json
 
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # go up two levels to root
-with open(os.path.join(base_dir, "backend", "secrets.json"), "r") as f:
-    secrets = json.load(f)
 
+def _load_openai_client():
+    # Prefer environment variable in deployment
+    api_key = os.getenv("OPENAI_KEY")
+    if not api_key:
+        # Fallback to optional secrets.json for local dev if present
+        secrets_path = os.path.join(base_dir, "backend", "secrets.json")
+        if os.path.exists(secrets_path):
+            try:
+                with open(secrets_path, "r") as f:
+                    secrets = json.load(f)
+                    api_key = secrets.get("OPENAI_KEY")
+            except Exception:
+                api_key = None
+    return OpenAI(api_key=api_key) if api_key else None
 
-
-api_key = secrets["OPENAI_KEY"]
-client = OpenAI(api_key=api_key)
+client = _load_openai_client()
 
 
 def generate_insight(trend_data, series_name):
@@ -38,6 +48,8 @@ def generate_insight(trend_data, series_name):
 def generate_ai_insight(trend_data, series_name):
     """Generate a natural language summary of the economic trend"""
     try:
+        if client is None:
+            return f"AI insights temporarily unavailable for {series_name}."
         prompt = f"""
         Provide a concise, professional summary of the following trend data:
         {trend_data}
@@ -65,6 +77,8 @@ def generate_overall_ai_insight(context: dict):
       }
     """
     try:
+        if client is None:
+            return "Overall AI insight temporarily unavailable."
         prompt = f"""
         You are an economist. Provide a concise, professional assessment of the U.S. economic health.
         Use the following metrics and the provided composite health score as context. Avoid hedging; be crisp and actionable in 4-6 sentences.
