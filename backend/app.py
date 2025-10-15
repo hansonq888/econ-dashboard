@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+import re
 from backend.series.unemployment import UnemploymentSeries
 from backend.series.cpi import CPISeries
 from backend.series.fed_funds import FedFundsSeries
@@ -28,14 +29,19 @@ def _sanitize_for_json(obj):
 app = FastAPI(title="Economic Trends Dashboard API")
 # python -m uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
 # Add CORS middleware
+# Custom CORS function to handle wildcards
+def is_origin_allowed(origin: str) -> bool:
+    allowed_patterns = [
+        r"http://localhost:\d+",
+        r"http://127\.0\.0\.1:\d+",
+        r"https://.*\.vercel\.app$",
+        # Add your custom domain here: r"https://your-dashboard\.com$"
+    ]
+    return any(re.match(pattern, origin) for pattern in allowed_patterns)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176",
-        "http://127.0.0.1:3000", "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://127.0.0.1:5175", "http://127.0.0.1:5176",
-        "https://*.vercel.app",  # Allow any Vercel subdomain
-        # Add your custom domain here when you get one: "https://your-dashboard.com"
-    ],
+    allow_origin_regex=r"https://.*\.vercel\.app|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
