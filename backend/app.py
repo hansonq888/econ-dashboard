@@ -35,6 +35,7 @@ def is_origin_allowed(origin: str) -> bool:
         r"http://localhost:\d+",
         r"http://127\.0\.0\.1:\d+",
         r"https://.*\.vercel\.app$",
+        r""
         # Add your custom domain here: r"https://your-dashboard\.com$"
     ]
     return any(re.match(pattern, origin) for pattern in allowed_patterns)
@@ -42,6 +43,10 @@ def is_origin_allowed(origin: str) -> bool:
 app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=r"https://.*\.vercel\.app|http://localhost:\d+|http://127\.0\.0\.1:\d+",
+    allow_origins=[
+        "https://macroboard.org",
+        "https://www.macroboard.org",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
