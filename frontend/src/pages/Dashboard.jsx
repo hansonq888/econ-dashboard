@@ -81,6 +81,19 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadData() {
       console.log("Starting to load data...");
+      
+      // Pre-wake the backend to reduce spin-up time
+      try {
+        console.log("Pre-waking backend...");
+        await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/health`, {
+          method: 'GET',
+          timeout: 10000
+        });
+        console.log("Backend pre-wake completed");
+      } catch (error) {
+        console.log("Backend pre-wake failed (expected if sleeping):", error.message);
+      }
+      
       // Always show 5 years ago to present
       const today = new Date();
       const fiveYearsAgo = new Date(today.getFullYear() - 5, today.getMonth(), today.getDate());
