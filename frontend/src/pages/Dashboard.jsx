@@ -271,6 +271,9 @@ export default function Dashboard() {
           <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             Data is cached for 24 hours for faster loading
           </p>
+          <p className={`text-xs mt-2 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>
+            ⏳ First load may take up to 60 seconds (backend spinning up)
+          </p>
           
           {/* Loading Progress */}
           <div className="mt-8 space-y-3">

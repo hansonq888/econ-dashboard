@@ -138,6 +138,11 @@ def clear_cache():
     backend_cache.clear()
     return {"message": "Cache cleared successfully"}
 
+@app.get("/health")
+def health_check():
+    """Simple health check endpoint"""
+    return {"status": "healthy", "message": "Backend is running"}
+
 @app.get("/cache/stats")
 def cache_stats():
     """Get cache statistics"""

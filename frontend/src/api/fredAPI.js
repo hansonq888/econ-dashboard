@@ -4,7 +4,7 @@ import { dataCache } from "../utils/cache";
 const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000"; // Use env var or fallback to local
 console.log("API_BASE:", API_BASE); // Debug log
 
-export async function fetchSeries(seriesName, start, end, useCache = true, includeAI = true) {
+export async function fetchSeries(seriesName, start, end, useCache = true, includeAI = true, retryCount = 0) {
   // Check frontend cache first
   if (useCache) {
     // Try to infer frequency from last-known cached meta or backend response; we pass undefined here for key match
@@ -18,7 +18,7 @@ export async function fetchSeries(seriesName, start, end, useCache = true, inclu
     // Fetch from API with backend cache parameter
     const response = await axios.get(`${API_BASE}/series/${seriesName}`, {
       params: { start, end, use_cache: useCache, include_ai: includeAI },
-      timeout: 10000, // 10 second timeout
+      timeout: 90000, // 90 second timeout to handle Render spin-up
     });
 
     // Cache the response in frontend cache too (frequency-aware)
@@ -40,6 +40,13 @@ export async function fetchSeries(seriesName, start, end, useCache = true, inclu
     return response.data;
   } catch (error) {
     console.error(`API Error for ${seriesName}:`, error);
+    
+    // Retry logic for Render spin-up (max 2 retries)
+    if (retryCount < 2 && (error.code === 'ECONNABORTED' || error.message.includes('timeout'))) {
+      console.log(`Retrying ${seriesName} (attempt ${retryCount + 1}/2) - backend may be spinning up`);
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+      return fetchSeries(seriesName, start, end, useCache, includeAI, retryCount + 1);
+    }
     
     // Try to return cached data even if expired
     if (useCache) {
