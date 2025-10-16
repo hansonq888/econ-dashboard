@@ -7,6 +7,7 @@ export default function Dashboard() {
   const [loadingProgress, setLoadingProgress] = useState({});
   const [darkMode, setDarkMode] = useState(true);
   const [showCacheInfo, setShowCacheInfo] = useState(false);
+  const [cacheStats, setCacheStats] = useState(null);
   const [enableAI, setEnableAI] = useState(true);
   const [dateRange, setDateRange] = useState('');
   const [overallInsight, setOverallInsight] = useState(null);
@@ -202,7 +203,24 @@ export default function Dashboard() {
     }
   };
 
-  // Cache management not needed with Render backend
+  // Function to fetch cache statistics
+  const fetchCacheStats = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/cache/stats`);
+      const stats = await response.json();
+      setCacheStats(stats);
+    } catch (error) {
+      console.error('Failed to fetch cache stats:', error);
+      setCacheStats(null);
+    }
+  };
+
+  // Fetch cache stats when cache info is shown
+  useEffect(() => {
+    if (showCacheInfo) {
+      fetchCacheStats();
+    }
+  }, [showCacheInfo]);
 
   if (loading) {
     const series = ["cpi", "unemployment", "fedfunds", "gdp", "pce", "t10y3m"];
@@ -235,7 +253,7 @@ export default function Dashboard() {
               ? 'from-blue-400 to-purple-400' 
               : 'from-blue-600 to-purple-600'
           } bg-clip-text text-transparent`}>
-            Loading Economic Data
+            MacroBoard
           </h2>
           <p className={`text-lg mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Fetching rolling 5-year economic data from FRED API
@@ -450,10 +468,57 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
-            <div className={`p-6 text-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              <p className="text-lg mb-2">🚀 Powered by Render Backend</p>
-              <p className="text-sm">Data is fetched directly from the Render API with built-in caching</p>
-              <p className="text-xs mt-2">AI Insights: {enableAI ? 'Enabled' : 'Disabled'}</p>
+            <div className={`p-6 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              {cacheStats ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                      <div className="text-2xl font-bold text-blue-500">{cacheStats.total}</div>
+                      <div className="text-sm">Total Cache Files</div>
+                    </div>
+                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                      <div className="text-2xl font-bold text-green-500">{cacheStats.valid}</div>
+                      <div className="text-sm">Valid Files</div>
+                    </div>
+                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                      <div className="text-2xl font-bold text-red-500">{cacheStats.expired}</div>
+                      <div className="text-sm">Expired Files</div>
+                    </div>
+                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                      <div className="text-2xl font-bold text-purple-500">{(cacheStats.size / 1024).toFixed(1)}KB</div>
+                      <div className="text-sm">Cache Size</div>
+                    </div>
+                  </div>
+                  <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/30' : 'bg-gray-100/30'}`}>
+                    <div className="text-sm font-semibold mb-2">Cache Details</div>
+                    <div className="space-y-1 text-xs">
+                      <div>Oldest Cache: {cacheStats.oldestCache}</div>
+                      <div>Newest Cache: {cacheStats.newestCache}</div>
+                      <div>Cache Duration: {cacheStats.cacheDuration}</div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <button
+                      onClick={fetchCacheStats}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                        darkMode 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-blue-500 hover:bg-blue-600 text-white'
+                      }`}
+                    >
+                      🔄 Refresh Stats
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p>Loading cache statistics...</p>
+                </div>
+              )}
+              <div className={`mt-4 pt-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                <p className="text-xs text-center">AI Insights: {enableAI ? 'Enabled' : 'Disabled'}</p>
+              </div>
             </div>
           </div>
         </div>
