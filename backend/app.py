@@ -206,9 +206,19 @@ def cache_stats():
 
 
 @app.get("/insights/overall")
-def overall_insight(start: str, end: str):
+def overall_insight(start: str, end: str, use_cache: bool = True):
     """Compute combined metrics and return an overall AI-generated assessment."""
     try:
+        # Check cache first for overall insights
+        if use_cache:
+            cache_key = f"overall_insights_{start}_{end}"
+            cached_data = backend_cache.get("overall_insights", start, end, "")
+            if cached_data:
+                print(f"Returning cached overall insights")
+                return _sanitize_for_json(cached_data)
+            else:
+                print(f"No cache found for overall insights, generating fresh data")
+        
         # Pull series (use cache to be fast)
         needed = ["gdp", "cpi", "unemployment", "fedfunds", "pce", "t10y3m"]
         results = {}
@@ -294,7 +304,14 @@ def overall_insight(start: str, end: str):
         })
 
         narrative = generate_overall_ai_insight(context)
-        return _sanitize_for_json({ 'health_percent': health_percent, 'metrics': metrics, 'ai_insight': narrative })
+        result = _sanitize_for_json({ 'health_percent': health_percent, 'metrics': metrics, 'ai_insight': narrative })
+        
+        # Cache the result
+        if use_cache:
+            print(f"Caching overall insights")
+            backend_cache.set("overall_insights", start, end, result, "")
+        
+        return result
     except Exception as e:
         print("Overall insight error:", e)
         return _sanitize_for_json({ 'health_percent': None, 'metrics': {}, 'ai_insight': 'Overall AI insight temporarily unavailable.' })

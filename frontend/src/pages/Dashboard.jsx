@@ -137,7 +137,7 @@ export default function Dashboard() {
 
       // Fetch overall AI insight (optional)
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}&use_cache=true`);
         const payload = await res.json();
         setOverallInsight(payload);
       } catch (e) {
@@ -194,7 +194,7 @@ export default function Dashboard() {
 
     // Refresh overall AI insight
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}&use_cache=false`);
       const payload = await res.json();
       setOverallInsight(payload);
     } catch (e) {

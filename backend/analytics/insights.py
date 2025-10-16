@@ -1,6 +1,7 @@
 # insight_ai.py
 from openai import OpenAI
 import os, json
+import hashlib
 
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # go up two levels to root
 
@@ -20,6 +21,28 @@ def _load_openai_client():
     return OpenAI(api_key=api_key) if api_key else None
 
 client = _load_openai_client()
+
+# Simple in-memory cache for AI insights to avoid repeated API calls
+_ai_insights_cache = {}
+
+def _get_cache_key(data, series_name, insight_type="individual"):
+    """Generate a cache key for AI insights based on data hash and series name"""
+    data_str = str(data.to_dict() if hasattr(data, 'to_dict') else data)
+    cache_string = f"{insight_type}_{series_name}_{data_str}"
+    return hashlib.md5(cache_string.encode()).hexdigest()
+
+def _get_cached_ai_insight(cache_key):
+    """Get cached AI insight if available"""
+    return _ai_insights_cache.get(cache_key)
+
+def _cache_ai_insight(cache_key, insight):
+    """Cache AI insight"""
+    _ai_insights_cache[cache_key] = insight
+    # Keep cache size reasonable (max 100 entries)
+    if len(_ai_insights_cache) > 100:
+        # Remove oldest entries (simple FIFO)
+        oldest_key = next(iter(_ai_insights_cache))
+        del _ai_insights_cache[oldest_key]
 
 
 def generate_insight(trend_data, series_name):
@@ -50,6 +73,14 @@ def generate_ai_insight(trend_data, series_name):
     try:
         if client is None:
             return f"AI insights temporarily unavailable for {series_name}."
+        
+        # Check cache first
+        cache_key = _get_cache_key(trend_data, series_name, "individual")
+        cached_insight = _get_cached_ai_insight(cache_key)
+        if cached_insight:
+            print(f"Returning cached AI insight for {series_name}")
+            return cached_insight
+        
         prompt = f"""
         Provide a concise, professional summary of the following trend data:
         {trend_data}
@@ -61,7 +92,12 @@ def generate_ai_insight(trend_data, series_name):
             messages=[{"role": "user", "content": prompt}],
         )
 
-        return response.choices[0].message.content
+        insight = response.choices[0].message.content
+        # Cache the result
+        _cache_ai_insight(cache_key, insight)
+        print(f"Cached AI insight for {series_name}")
+        
+        return insight
     except Exception as e:
         print(f"OpenAI API error: {e}")
         return f"AI insights temporarily unavailable for {series_name}. Please try again later."
@@ -79,6 +115,14 @@ def generate_overall_ai_insight(context: dict):
     try:
         if client is None:
             return "Overall AI insight temporarily unavailable."
+        
+        # Check cache first
+        cache_key = _get_cache_key(context, "overall", "overall")
+        cached_insight = _get_cached_ai_insight(cache_key)
+        if cached_insight:
+            print(f"Returning cached overall AI insight")
+            return cached_insight
+        
         prompt = f"""
         You are an economist. Provide a concise, professional assessment of the U.S. economic health.
         Use the following metrics and the provided composite health score as context. Avoid hedging; be crisp and actionable in 4-6 sentences.
@@ -98,7 +142,12 @@ def generate_overall_ai_insight(context: dict):
             messages=[{"role": "user", "content": prompt}],
         )
 
-        return response.choices[0].message.content
+        insight = response.choices[0].message.content
+        # Cache the result
+        _cache_ai_insight(cache_key, insight)
+        print(f"Cached overall AI insight")
+        
+        return insight
     except Exception as e:
         print(f"OpenAI API error (overall): {e}")
         return "Overall AI insight temporarily unavailable."
