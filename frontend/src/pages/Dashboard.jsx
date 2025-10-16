@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { fetchSeries, dataCache } from "../api/fredAPI";
 import ChartCard from "../components/ChartCard";
 
 export default function Dashboard() {
@@ -7,7 +6,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState({});
   const [darkMode, setDarkMode] = useState(true);
-  const [cacheStats, setCacheStats] = useState(null);
   const [showCacheInfo, setShowCacheInfo] = useState(false);
   const [enableAI, setEnableAI] = useState(true);
   const [dateRange, setDateRange] = useState('');
@@ -109,7 +107,8 @@ export default function Dashboard() {
         try {
           console.log(`Fetching ${s}...`);
           setLoadingProgress(prev => ({ ...prev, [s]: 'loading' }));
-          const result = await fetchSeries(s, start, end, true, enableAI); // Use AI setting
+          const response = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/series/${s}?start=${start}&end=${end}&use_cache=true&include_ai=${enableAI}`);
+          const result = await response.json();
           console.log(`${s} loaded successfully:`, result);
           setLoadingProgress(prev => ({ ...prev, [s]: 'loaded' }));
           return { series: s, data: result };
@@ -133,16 +132,7 @@ export default function Dashboard() {
       setData(dataObject);
       setLoading(false);
       
-      // Update cache stats (get from backend)
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/cache/stats`);
-        const stats = await response.json();
-        setCacheStats(stats);
-      } catch (error) {
-        console.error('Failed to get cache stats:', error);
-        // Fallback to frontend cache stats
-        setCacheStats(dataCache.getStats());
-      }
+      // Cache stats not needed with Render backend
 
       // Fetch overall AI insight (optional)
       try {
@@ -172,34 +162,15 @@ export default function Dashboard() {
     // Set date range for display
     setDateRange(`${fiveYearsAgo.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })} - ${today.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}`);
 
-    // 1) Serve cached data immediately if available
-    const inferredFreq = (s) => (
-      s === 't10y3m' ? 'd' :
-      s === 'gdp' ? 'q' :
-      s === 'cpi' ? 'm' :
-      s === 'unemployment' ? 'm' :
-      s === 'fedfunds' ? 'm' :
-      s === 'pce' ? 'm' : undefined
-    );
-    const cachedObject = {};
-    series.forEach((s) => {
-      const cached = dataCache.get(s, start, end, inferredFreq(s));
-      if (cached) {
-        cachedObject[s] = cached;
-      }
-    });
-    if (Object.keys(cachedObject).length > 0) {
-      setData((prev) => ({ ...prev, ...cachedObject }));
-    }
+    // Refresh all data from backend
 
-    // 2) Revalidate in background (fetch fresh from backend, bypassing frontend cache)
+    // 2) Revalidate in background (fetch fresh from backend)
     const promises = series.map(async (s) => {
       try {
         console.log(`Refreshing ${s}...`);
         setLoadingProgress(prev => ({ ...prev, [s]: 'loading' }));
-        const result = await fetchSeries(s, start, end, false, enableAI); // force network
-        // Save to frontend cache with inferred frequency
-        dataCache.set(s, start, end, result, inferredFreq(s));
+        const response = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/series/${s}?start=${start}&end=${end}&use_cache=false&include_ai=${enableAI}`);
+        const result = await response.json();
         setLoadingProgress(prev => ({ ...prev, [s]: 'loaded' }));
         return { series: s, data: result };
       } catch (error) {
@@ -218,16 +189,7 @@ export default function Dashboard() {
       setData((prev) => ({ ...prev, ...freshObject }));
     }
 
-    // Update cache stats (get from backend)
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/cache/stats`);
-      const stats = await response.json();
-      setCacheStats(stats);
-    } catch (error) {
-      console.error('Failed to get cache stats:', error);
-      // Fallback to frontend cache stats
-      setCacheStats(dataCache.getStats());
-    }
+    // Cache stats not needed with Render backend
 
     // Refresh overall AI insight
     try {
@@ -240,12 +202,7 @@ export default function Dashboard() {
     }
   };
 
-  // Function to clear cache
-  const clearCache = () => {
-    dataCache.clear();
-    setCacheStats(dataCache.getStats());
-    console.log("Cache cleared");
-  };
+  // Cache management not needed with Render backend
 
   if (loading) {
     const series = ["cpi", "unemployment", "fedfunds", "gdp"];
@@ -490,67 +447,12 @@ export default function Dashboard() {
                   Performance and storage statistics
                 </p>
               </div>
-              <button
-                onClick={clearCache}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl ${
-                  darkMode 
-                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800' 
-                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
-                }`}
-              >
-                🗑️ Clear Cache
-              </button>
             </div>
-            {cacheStats && (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className={`p-4 rounded-xl ${
-                  darkMode ? 'bg-gray-700/30' : 'bg-blue-50'
-                }`}>
-                  <h4 className={`font-semibold text-sm mb-2 ${
-                    darkMode ? 'text-blue-300' : 'text-blue-800'
-                  }`}>Storage</h4>
-                  <div className={`space-y-1 text-sm ${
-                    darkMode ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    <p><strong>Total entries:</strong> {cacheStats.total}</p>
-                    <p><strong>Valid entries:</strong> {cacheStats.valid}</p>
-                    <p><strong>Expired entries:</strong> {cacheStats.expired}</p>
-                    <p><strong>Cache size:</strong> {(cacheStats.size / 1024).toFixed(1)} KB</p>
-                  </div>
-                </div>
-                
-                <div className={`p-4 rounded-xl ${
-                  darkMode ? 'bg-gray-700/30' : 'bg-green-50'
-                }`}>
-                  <h4 className={`font-semibold text-sm mb-2 ${
-                    darkMode ? 'text-green-300' : 'text-green-800'
-                  }`}>Performance</h4>
-                  <div className={`space-y-1 text-sm ${
-                    darkMode ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    <p><strong>Cache Duration:</strong> {cacheStats.cacheDuration}</p>
-                    <p><strong>AI Insights:</strong> {enableAI ? 'Enabled' : 'Disabled'}</p>
-                    <p><strong>Status:</strong> {cacheStats.valid > 0 ? 'Active' : 'Empty'}</p>
-                  </div>
-                </div>
-                
-                <div className={`p-4 rounded-xl ${
-                  darkMode ? 'bg-gray-700/30' : 'bg-purple-50'
-                }`}>
-                  <h4 className={`font-semibold text-sm mb-2 ${
-                    darkMode ? 'text-purple-300' : 'text-purple-800'
-                  }`}>Timeline</h4>
-                  <div className={`space-y-1 text-sm ${
-                    darkMode ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    <p><strong>Oldest data:</strong></p>
-                    <p className="text-xs">{cacheStats.oldestCache}</p>
-                    <p><strong>Newest data:</strong></p>
-                    <p className="text-xs">{cacheStats.newestCache}</p>
-                  </div>
-                </div>
-              </div>
-            )}
+            <div className={`p-6 text-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p className="text-lg mb-2">🚀 Powered by Render Backend</p>
+              <p className="text-sm">Data is fetched directly from the Render API with built-in caching</p>
+              <p className="text-xs mt-2">AI Insights: {enableAI ? 'Enabled' : 'Disabled'}</p>
+            </div>
           </div>
         </div>
       )}
