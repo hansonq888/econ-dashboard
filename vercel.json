@@ -1,5 +1,4 @@
 {
-  "functions": {},
   "buildCommand": "cd frontend && npm ci && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
