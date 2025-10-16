@@ -85,7 +85,7 @@ export default function Dashboard() {
       // Pre-wake the backend to reduce cold start time
       try {
         console.log("Pre-waking backend...");
-        await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/health`, {
+        await fetch(`/api/health`, {
           method: 'GET',
           timeout: 10000
         });
@@ -135,7 +135,7 @@ export default function Dashboard() {
       
       // Update cache stats (get from backend)
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/cache/stats`);
+        const response = await fetch(`/api/cache/stats`);
         const stats = await response.json();
         setCacheStats(stats);
       } catch (error) {
@@ -146,7 +146,7 @@ export default function Dashboard() {
 
       // Fetch overall AI insight (optional)
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/insights/overall?start=${start}&end=${end}`);
+        const res = await fetch(`/api/insights/overall?start=${start}&end=${end}`);
         const payload = await res.json();
         setOverallInsight(payload);
       } catch (e) {
@@ -220,7 +220,7 @@ export default function Dashboard() {
 
     // Update cache stats (get from backend)
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/cache/stats`);
+      const response = await fetch(`/api/cache/stats`);
       const stats = await response.json();
       setCacheStats(stats);
     } catch (error) {
@@ -231,7 +231,7 @@ export default function Dashboard() {
 
     // Refresh overall AI insight
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/insights/overall?start=${start}&end=${end}`);
+      const res = await fetch(`/api/insights/overall?start=${start}&end=${end}`);
       const payload = await res.json();
       setOverallInsight(payload);
     } catch (e) {

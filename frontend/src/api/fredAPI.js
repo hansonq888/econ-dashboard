@@ -1,7 +1,7 @@
 import axios from "axios";
 import { dataCache } from "../utils/cache";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "/api"; // Use env var or fallback to Vercel API routes
+const API_BASE = "/api";
 console.log("API_BASE:", API_BASE); // Debug log
 
 export async function fetchSeries(seriesName, start, end, useCache = true, includeAI = true, retryCount = 0) {
