@@ -1,9 +1,11 @@
 {
   "functions": {
     "api/**/*.py": {
-      "runtime": "python3.11"
+      "runtime": "@vercel/python@3.1.10"
     }
   },
+  "buildCommand": "cd frontend && npm ci && npm run build",
+  "outputDirectory": "frontend/dist",
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/" }
