@@ -82,16 +82,16 @@ export default function Dashboard() {
     async function loadData() {
       console.log("Starting to load data...");
       
-      // Pre-wake the backend to reduce spin-up time
+      // Pre-wake the backend to reduce cold start time
       try {
         console.log("Pre-waking backend...");
-        await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/health`, {
+        await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/health`, {
           method: 'GET',
           timeout: 10000
         });
         console.log("Backend pre-wake completed");
       } catch (error) {
-        console.log("Backend pre-wake failed (expected if sleeping):", error.message);
+        console.log("Backend pre-wake failed (expected on cold start):", error.message);
       }
       
       // Always show 5 years ago to present
@@ -135,7 +135,7 @@ export default function Dashboard() {
       
       // Update cache stats (get from backend)
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/cache/stats`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/cache/stats`);
         const stats = await response.json();
         setCacheStats(stats);
       } catch (error) {
@@ -146,7 +146,7 @@ export default function Dashboard() {
 
       // Fetch overall AI insight (optional)
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/insights/overall?start=${start}&end=${end}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/insights/overall?start=${start}&end=${end}`);
         const payload = await res.json();
         setOverallInsight(payload);
       } catch (e) {
@@ -220,7 +220,7 @@ export default function Dashboard() {
 
     // Update cache stats (get from backend)
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/cache/stats`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/cache/stats`);
       const stats = await response.json();
       setCacheStats(stats);
     } catch (error) {
@@ -231,7 +231,7 @@ export default function Dashboard() {
 
     // Refresh overall AI insight
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'}/insights/overall?start=${start}&end=${end}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/insights/overall?start=${start}&end=${end}`);
       const payload = await res.json();
       setOverallInsight(payload);
     } catch (e) {
@@ -284,8 +284,8 @@ export default function Dashboard() {
           <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             Data is cached for 24 hours for faster loading
           </p>
-          <p className={`text-xs mt-2 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>
-            ⏳ First load may take up to 60 seconds (backend spinning up)
+          <p className={`text-xs mt-2 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+            ⚡ Serverless functions - fast loading with occasional cold starts
           </p>
           
           {/* Loading Progress */}

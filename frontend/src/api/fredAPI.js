@@ -1,7 +1,7 @@
 import axios from "axios";
 import { dataCache } from "../utils/cache";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000"; // Use env var or fallback to local
+const API_BASE = import.meta.env.VITE_API_BASE || "/api"; // Use env var or fallback to Vercel API routes
 console.log("API_BASE:", API_BASE); // Debug log
 
 export async function fetchSeries(seriesName, start, end, useCache = true, includeAI = true, retryCount = 0) {
@@ -18,7 +18,7 @@ export async function fetchSeries(seriesName, start, end, useCache = true, inclu
     // Fetch from API with backend cache parameter
     const response = await axios.get(`${API_BASE}/series/${seriesName}`, {
       params: { start, end, use_cache: useCache, include_ai: includeAI },
-      timeout: 90000, // 90 second timeout to handle Render spin-up
+      timeout: 30000, // 30 second timeout (Vercel functions are faster)
     });
 
     // Cache the response in frontend cache too (frequency-aware)
@@ -41,10 +41,10 @@ export async function fetchSeries(seriesName, start, end, useCache = true, inclu
   } catch (error) {
     console.error(`API Error for ${seriesName}:`, error);
     
-    // Retry logic for Render spin-up (max 2 retries)
-    if (retryCount < 2 && (error.code === 'ECONNABORTED' || error.message.includes('timeout'))) {
-      console.log(`Retrying ${seriesName} (attempt ${retryCount + 1}/2) - backend may be spinning up`);
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+    // Retry logic for Vercel cold starts (max 1 retry)
+    if (retryCount < 1 && (error.code === 'ECONNABORTED' || error.message.includes('timeout'))) {
+      console.log(`Retrying ${seriesName} (attempt ${retryCount + 1}/1) - Vercel cold start`);
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retry
       return fetchSeries(seriesName, start, end, useCache, includeAI, retryCount + 1);
     }
     
