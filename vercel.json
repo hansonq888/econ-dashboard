@@ -1,7 +1,7 @@
 {
   "functions": {
-    "runtime": {
-      "python": "3.11"
+    "api/**/*.py": {
+      "runtime": "python3.11"
     }
   },
   "buildCommand": "cd frontend && npm ci && npm run build",
