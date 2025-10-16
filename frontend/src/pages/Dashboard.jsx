@@ -205,12 +205,14 @@ export default function Dashboard() {
   // Cache management not needed with Render backend
 
   if (loading) {
-    const series = ["cpi", "unemployment", "fedfunds", "gdp"];
+    const series = ["cpi", "unemployment", "fedfunds", "gdp", "pce", "t10y3m"];
     const seriesNames = {
       cpi: "Consumer Price Index",
       unemployment: "Unemployment Rate", 
       fedfunds: "Federal Funds Rate",
-      gdp: "Gross Domestic Product"
+      gdp: "Gross Domestic Product",
+      pce: "Personal Consumption Expenditures",
+      t10y3m: "Yield Curve: 10Y - 3M"
     };
     
     return (
@@ -242,7 +244,7 @@ export default function Dashboard() {
             Data is cached for 24 hours for faster loading
           </p>
           <p className={`text-xs mt-2 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-            ⚡ Serverless functions - fast loading with occasional cold starts
+            ⚡ Using Render backend – first load may take a few seconds
           </p>
           
           {/* Loading Progress */}
