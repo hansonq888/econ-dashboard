@@ -27,6 +27,12 @@ def _sanitize_for_json(obj):
     return obj
 
 app = FastAPI(title="Economic Trends Dashboard API")
+
+@app.get("/")
+def root():
+    """Root endpoint"""
+    return {"message": "FRED Visualizer API is running", "version": "1.0.0"}
+
 # python -m uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
 # Add CORS middleware
 # Custom CORS function to handle wildcards
@@ -141,7 +147,15 @@ def clear_cache():
 @app.get("/health")
 def health_check():
     """Simple health check endpoint"""
-    return {"status": "healthy", "message": "Backend is running"}
+    import time
+    import os
+    return {
+        "status": "healthy", 
+        "message": "Backend is running",
+        "timestamp": time.time(),
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "python_version": os.sys.version
+    }
 
 @app.get("/cache/stats")
 def cache_stats():
