@@ -236,27 +236,28 @@ export default function Dashboard() {
     return (
       <div className={`min-h-screen flex items-center justify-center transition-all duration-300 ${
         darkMode 
-          ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900' 
-          : 'bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100'
+          ? 'bg-slate-900' 
+          : 'bg-slate-100'
       }`}>
         <div className="text-center max-w-lg mx-auto px-8">
           {/* Animated logo/icon */}
           <div className="relative mb-8">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-20 animate-pulse"></div>
-            <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 rounded-full w-20 h-20 mx-auto flex items-center justify-center">
-              <span className="text-white text-3xl font-bold">📊</span>
+            <div className="relative bg-orange-500 rounded-full w-20 h-20 mx-auto flex items-center justify-center bold-shadow-lg">
+              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+              </svg>
             </div>
           </div>
           
-          <h2 className={`text-3xl font-bold mb-3 bg-gradient-to-r ${
+          <h2 className={`text-3xl font-bold mb-3 classic-font ${
             darkMode 
-              ? 'from-blue-400 to-purple-400' 
-              : 'from-blue-600 to-purple-600'
-          } bg-clip-text text-transparent`}>
+              ? 'text-orange-400' 
+              : 'text-orange-600'
+          }`}>
             MacroBoard
           </h2>
-          <p className={`text-lg mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-            Fetching rolling 5-year economic data from FRED API
+          <p className={`text-lg mb-2 bold-font ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+            ECONOMIC INTELLIGENCE
           </p>
           <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             Data is cached for 24 hours for faster loading
@@ -301,30 +302,29 @@ export default function Dashboard() {
   return (
     <div className={`min-h-screen transition-all duration-300 ${
       darkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900' 
-        : 'bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100'
+        ? 'bg-slate-900' 
+        : 'bg-slate-100'
     }`}>
-      {/* Header with gradient background */}
+      {/* Header with solid sporty colors */}
       <div className={`relative overflow-hidden ${
         darkMode 
-          ? 'bg-gradient-to-r from-gray-800/90 to-blue-800/90 backdrop-blur-sm' 
-          : 'bg-gradient-to-r from-white/90 to-blue-50/90 backdrop-blur-sm'
-      } border-b border-white/20 shadow-xl`}>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
+          ? 'bg-slate-800' 
+          : 'bg-white'
+      } border-b-4 border-orange-500 shadow-xl`}>
         <div className="relative px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className={`text-4xl font-bold bg-gradient-to-r ${
+              <h1 className={`text-4xl font-bold classic-font ${
                 darkMode 
-                  ? 'from-blue-400 to-purple-400' 
-                  : 'from-blue-600 to-purple-600'
-              } bg-clip-text text-transparent`}>
-                U.S. Economic Dashboard
-              </h1>
-              <p className={`text-sm mt-1 ${
-                darkMode ? 'text-gray-300' : 'text-gray-600'
+                  ? 'text-orange-400' 
+                  : 'text-orange-600'
               }`}>
-                Rolling 5-year economic indicators and market analysis
+                U.S. ECONOMIC DASHBOARD
+              </h1>
+              <p className={`text-sm mt-1 bold-font ${
+                darkMode ? 'text-slate-300' : 'text-slate-700'
+              }`}>
+                REAL-TIME ECONOMIC DATA
               </p>
               {dateRange && (
                 <p className={`text-xs mt-1 ${
@@ -403,43 +403,61 @@ export default function Dashboard() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowCacheInfo(!showCacheInfo)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl ${
+                className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
                   darkMode 
-                    ? 'bg-gray-700/80 text-white hover:bg-gray-600/80 backdrop-blur-sm' 
-                    : 'bg-white/80 text-gray-800 hover:bg-gray-100/80 backdrop-blur-sm'
+                    ? 'bg-slate-700 text-white hover:bg-slate-600' 
+                    : 'bg-white text-slate-800 hover:bg-slate-100'
                 }`}
               >
-                📊 Cache
+                <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+                CACHE
               </button>
               <button
                 onClick={() => setEnableAI(!enableAI)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl ${
+                className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
                   enableAI
-                    ? (darkMode ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white' : 'bg-gradient-to-r from-green-500 to-emerald-500 text-white')
-                    : (darkMode ? 'bg-gray-700/80 text-white hover:bg-gray-600/80 backdrop-blur-sm' : 'bg-white/80 text-gray-800 hover:bg-gray-100/80 backdrop-blur-sm')
+                    ? (darkMode ? 'bg-green-600 text-white' : 'bg-green-600 text-white')
+                    : (darkMode ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-white text-slate-800 hover:bg-slate-100')
                 }`}
               >
-                {enableAI ? '🤖 AI On' : '🤖 AI Off'}
+                <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                {enableAI ? 'AI ON' : 'AI OFF'}
               </button>
               <button
                 onClick={refreshData}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 text-sm shadow-lg hover:shadow-xl ${
+                className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
                   darkMode 
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white' 
-                    : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-blue-600 text-white'
                 }`}
               >
-                🔄 Refresh
+                <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                </svg>
+                REFRESH
               </button>
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl ${
+                className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
                   darkMode 
-                    ? 'bg-gradient-to-r from-yellow-600 to-orange-600 text-white' 
-                    : 'bg-gradient-to-r from-gray-600 to-gray-700 text-white'
+                    ? 'bg-yellow-600 text-white' 
+                    : 'bg-slate-800 text-white'
                 }`}
               >
-                {darkMode ? '☀️ Light' : '🌙 Dark'}
+                {darkMode ? (
+                  <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                  </svg>
+                )}
+                {darkMode ? 'LIGHT' : 'DARK'}
               </button>
             </div>
           </div>
@@ -449,17 +467,20 @@ export default function Dashboard() {
       {/* Cache Info Panel */}
       {showCacheInfo && (
         <div className="px-8 py-6">
-          <div className={`max-w-4xl mx-auto p-6 rounded-2xl border transition-all duration-300 ${
+          <div className={`max-w-4xl mx-auto p-6 rounded-2xl border-2 transition-all duration-200 ${
             darkMode 
-              ? 'bg-gradient-to-br from-gray-800/90 to-blue-900/90 border-gray-700/50' 
-              : 'bg-gradient-to-br from-white/90 to-blue-50/90 border-gray-200/50'
-          } backdrop-blur-sm shadow-2xl`}>
+              ? 'bg-slate-800 border-orange-500' 
+              : 'bg-white border-orange-500'
+          } bold-shadow-lg`}>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h3 className={`text-2xl font-bold mb-2 ${
+                <h3 className={`text-2xl font-bold mb-2 flex items-center ${
                   darkMode ? 'text-white' : 'text-gray-800'
                 }`}>
-                  📊 Cache Information
+                  <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                  </svg>
+                  Cache Information
                 </h3>
                 <p className={`text-sm ${
                   darkMode ? 'text-gray-400' : 'text-gray-600'
@@ -472,19 +493,19 @@ export default function Dashboard() {
               {cacheStats ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                    <div className={`p-4 rounded-xl border-2 ${darkMode ? 'bg-slate-700 border-orange-500' : 'bg-slate-100 border-orange-500'}`}>
                       <div className="text-2xl font-bold text-blue-500">{cacheStats.total}</div>
                       <div className="text-sm">Total Cache Files</div>
                     </div>
-                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                    <div className={`p-4 rounded-xl border-2 ${darkMode ? 'bg-slate-700 border-orange-500' : 'bg-slate-100 border-orange-500'}`}>
                       <div className="text-2xl font-bold text-green-500">{cacheStats.valid}</div>
                       <div className="text-sm">Valid Files</div>
                     </div>
-                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                    <div className={`p-4 rounded-xl border-2 ${darkMode ? 'bg-slate-700 border-orange-500' : 'bg-slate-100 border-orange-500'}`}>
                       <div className="text-2xl font-bold text-red-500">{cacheStats.expired}</div>
                       <div className="text-sm">Expired Files</div>
                     </div>
-                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-100/50'}`}>
+                    <div className={`p-4 rounded-xl border-2 ${darkMode ? 'bg-slate-700 border-orange-500' : 'bg-slate-100 border-orange-500'}`}>
                       <div className="text-2xl font-bold text-purple-500">{(cacheStats.size / 1024).toFixed(1)}KB</div>
                       <div className="text-sm">Cache Size</div>
                     </div>
@@ -500,13 +521,16 @@ export default function Dashboard() {
                   <div className="text-center">
                     <button
                       onClick={fetchCacheStats}
-                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center mx-auto ${
                         darkMode 
                           ? 'bg-blue-600 hover:bg-blue-700 text-white' 
                           : 'bg-blue-500 hover:bg-blue-600 text-white'
                       }`}
                     >
-                      🔄 Refresh Stats
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                      </svg>
+                      Refresh Stats
                     </button>
                   </div>
                 </div>
@@ -664,18 +688,20 @@ export default function Dashboard() {
 
           {/* Overall Economic Health AI Sidebar */}
           <div className="xl:col-span-1">
-            <div className={`sticky top-8 rounded-2xl p-6 shadow-2xl backdrop-blur-sm border ${
+            <div className={`sticky top-8 rounded-2xl p-6 bold-shadow-lg border ${
               darkMode 
-                ? 'bg-gradient-to-br from-gray-800/90 to-blue-900/90 border-gray-700/50' 
-                : 'bg-gradient-to-br from-white/90 to-blue-50/90 border-gray-200/50'
+                ? 'bg-slate-800 border-slate-700' 
+                : 'bg-white border-slate-200'
             }`}>
               <div className="flex items-center gap-3 mb-6">
                 <div className={`p-2 rounded-xl ${
                   enableAI 
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
-                    : 'bg-gradient-to-r from-gray-400 to-gray-500'
+                    ? 'bg-green-600' 
+                    : 'bg-slate-500'
                 }`}>
-                  <span className="text-white text-xl">🤖</span>
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
                 </div>
                 <div>
                   <h3 className={`text-xl font-bold ${

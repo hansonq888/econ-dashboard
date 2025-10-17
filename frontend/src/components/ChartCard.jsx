@@ -40,13 +40,13 @@ export default function ChartCard({ title, subtitle, data, color, darkMode = fal
   };
 
   return (
-    <div className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-2xl ${
+    <div className={`group relative overflow-hidden rounded-2xl border transition-all duration-200 hover-lift ${
       darkMode 
-        ? 'bg-gradient-to-br from-gray-800/90 to-gray-900/90 border-gray-700/50' 
-        : 'bg-gradient-to-br from-white/90 to-gray-50/90 border-gray-200/50'
-    } backdrop-blur-sm`}>
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        ? 'bg-slate-800 border-slate-700' 
+        : 'bg-white border-slate-200'
+    } bold-shadow-lg`}>
+      {/* Orange accent overlay */}
+      <div className="absolute inset-0 bg-orange-500 opacity-0 group-hover:opacity-5 transition-opacity duration-200"></div>
       
       <div className="relative p-6">
         {/* Header */}
