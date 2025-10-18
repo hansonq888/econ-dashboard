@@ -687,12 +687,18 @@ export default function Dashboard() {
                 extra={(() => {
                   const v = data.t10y3m?.data?.value; if (!v) return null;
                   const d = Object.keys(v).sort(); if (!d.length) return null;
-                  const latest = Number(v[d[d.length - 1]]);
+                  const latestDate = d[d.length - 1];
+                  const latest = Number(v[latestDate]);
                   if (!isFinite(latest)) return null;
                   return (
-                    <div className="flex items-center justify-between">
-                      <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Latest spread</div>
-                      <div className={`font-semibold ${latest >= 0 ? 'text-green-600' : 'text-red-500'}`}>{latest.toFixed(2)}%</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Latest spread</div>
+                        <div className={`font-semibold ${latest >= 0 ? 'text-green-600' : 'text-red-500'}`}>{latest.toFixed(2)}%</div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Date: {latestDate}</div>
+                      </div>
                     </div>
                   );
                 })()}
