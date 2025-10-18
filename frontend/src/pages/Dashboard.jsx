@@ -135,19 +135,26 @@ export default function Dashboard() {
       
       // Cache stats not needed with Render backend
 
-      // Fetch overall AI insight (optional)
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}&use_cache=true`);
-        const payload = await res.json();
-        setOverallInsight(payload);
-      } catch (e) {
-        console.warn('Overall AI insight fetch failed:', e);
+      // Fetch overall AI insight (only if AI is enabled)
+      if (enableAI) {
+        try {
+          console.log('Fetching overall AI insight...');
+          const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}&use_cache=true`);
+          console.log('Overall AI insight response status:', res.status);
+          const payload = await res.json();
+          console.log('Overall AI insight payload:', payload);
+          setOverallInsight(payload);
+        } catch (e) {
+          console.warn('Overall AI insight fetch failed:', e);
+          setOverallInsight(null);
+        }
+      } else {
         setOverallInsight(null);
       }
     }
 
     loadData();
-  }, []);
+  }, [enableAI]);
 
   // Function to refresh data (stale-while-revalidate)
   const refreshData = async () => {
@@ -192,14 +199,21 @@ export default function Dashboard() {
 
     // Cache stats not needed with Render backend
 
-    // Refresh overall AI insight
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}&use_cache=false`);
-      const payload = await res.json();
-      setOverallInsight(payload);
-    } catch (e) {
-      console.warn('Overall AI insight fetch failed:', e);
-      // keep prior overall insight if available
+    // Refresh overall AI insight (only if AI is enabled)
+    if (enableAI) {
+      try {
+        console.log('Refreshing overall AI insight...');
+        const res = await fetch(`${import.meta.env.VITE_API_BASE || 'https://fred-watch-api.onrender.com'}/insights/overall?start=${start}&end=${end}&use_cache=false`);
+        console.log('Overall AI insight refresh response status:', res.status);
+        const payload = await res.json();
+        console.log('Overall AI insight refresh payload:', payload);
+        setOverallInsight(payload);
+      } catch (e) {
+        console.warn('Overall AI insight fetch failed:', e);
+        // keep prior overall insight if available
+      }
+    } else {
+      setOverallInsight(null);
     }
   };
 
@@ -719,6 +733,7 @@ export default function Dashboard() {
 
               {enableAI ? (
                 <div className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} text-sm`}>
+                  {console.log('Rendering AI insights section. overallInsight:', overallInsight)}
                   {overallInsight?.ai_insight ? (
                     <p>{overallInsight.ai_insight}</p>
                   ) : (
