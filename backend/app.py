@@ -303,7 +303,7 @@ def overall_insight(start: str, end: str, use_cache: bool = True):
             'metrics': metrics
         })
 
-        narrative = generate_overall_ai_insight(context)
+        narrative = generate_overall_ai_insight(context, backend_cache)
         result = _sanitize_for_json({ 'health_percent': health_percent, 'metrics': metrics, 'ai_insight': narrative })
         
         # Cache the result

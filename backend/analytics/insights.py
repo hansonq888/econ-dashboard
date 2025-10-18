@@ -2,6 +2,7 @@
 from openai import OpenAI
 import os, json
 import hashlib
+import time
 
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # go up two levels to root
 
@@ -103,7 +104,7 @@ def generate_ai_insight(trend_data, series_name):
         return f"AI insights temporarily unavailable for {series_name}. Please try again later."
 
 
-def generate_overall_ai_insight(context: dict):
+def generate_overall_ai_insight(context: dict, backend_cache=None):
     """Generate an overall economic health narrative based on combined metrics.
 
     Expected context keys include (but are not limited to):
@@ -116,11 +117,20 @@ def generate_overall_ai_insight(context: dict):
         if client is None:
             return "Overall AI insight temporarily unavailable."
         
-        # Check cache first
+        # Use persistent file-based cache if available
+        if backend_cache:
+            # Create a stable cache key based on context
+            context_str = f"overall_ai_{context.get('health_percent', 0)}_{hash(str(sorted(context.get('metrics', {}).items())))}"
+            cached_data = backend_cache.get("ai_insights", context_str, context_str, "")
+            if cached_data and cached_data.get('ai_insight'):
+                print(f"Returning cached overall AI insight from file cache")
+                return cached_data['ai_insight']
+        
+        # Fallback to in-memory cache
         cache_key = _get_cache_key(context, "overall", "overall")
         cached_insight = _get_cached_ai_insight(cache_key)
         if cached_insight:
-            print(f"Returning cached overall AI insight")
+            print(f"Returning cached overall AI insight from memory cache")
             return cached_insight
         
         prompt = f"""
@@ -143,9 +153,15 @@ def generate_overall_ai_insight(context: dict):
         )
 
         insight = response.choices[0].message.content
-        # Cache the result
+        
+        # Cache in both persistent and memory cache
+        if backend_cache:
+            cache_data = {'ai_insight': insight, 'timestamp': time.time()}
+            backend_cache.set("ai_insights", context_str, context_str, cache_data, "")
+            print(f"Cached overall AI insight to file cache")
+        
         _cache_ai_insight(cache_key, insight)
-        print(f"Cached overall AI insight")
+        print(f"Cached overall AI insight to memory cache")
         
         return insight
     except Exception as e:

@@ -1,0 +1,11 @@
+{
+  "data": {
+    "ai_insight": "Test AI insight",
+    "timestamp": 1234567890
+  },
+  "timestamp": 1760814755.120948,
+  "series_name": "ai_insights",
+  "start_date": "test_key",
+  "end_date": "test_key",
+  "frequency": ""
+}
