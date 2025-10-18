@@ -340,6 +340,11 @@ export default function Dashboard() {
               }`}>
                 REAL-TIME ECONOMIC DATA
               </p>
+              <p className={`text-xs mt-1 ${
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                📊 Data sourced from Federal Reserve Economic Data (FRED)
+              </p>
               {dateRange && (
                 <p className={`text-xs mt-1 ${
                   darkMode ? 'text-gray-400' : 'text-gray-500'
@@ -407,6 +412,9 @@ export default function Dashboard() {
                       <div className="truncate">Fed: {fed === null ? '—' : `${fed.toFixed(2)}%`}</div>
                       <div className="truncate">PCE y/y: {pceYoY === null ? '—' : formatPct(pceYoY)}</div>
                       <div className="truncate">10Y-3M: {t10y3m === null ? '—' : `${t10y3m.toFixed(2)}%`}</div>
+                    </div>
+                    <div className={`mt-2 text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      💡 Health score combines GDP growth, unemployment, inflation vs 2% target, Fed funds rate, consumer spending, and yield curve spread
                     </div>
                   </div>
                 );
@@ -764,6 +772,83 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className={`mt-16 py-8 border-t ${
+        darkMode ? 'border-gray-700 bg-slate-800' : 'border-gray-200 bg-white'
+      }`}>
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* About */}
+            <div>
+              <h3 className={`text-lg font-bold mb-4 ${
+                darkMode ? 'text-white' : 'text-gray-800'
+              }`}>
+                MacroBoard
+              </h3>
+              <p className={`text-sm ${
+                darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>
+                A real-time economic dashboard tracking key U.S. economic indicators with AI-powered insights.
+              </p>
+            </div>
+
+            {/* Data Sources */}
+            <div>
+              <h4 className={`text-sm font-semibold mb-3 ${
+                darkMode ? 'text-white' : 'text-gray-800'
+              }`}>
+                Data Sources
+              </h4>
+              <ul className={`space-y-2 text-sm ${
+                darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>
+                <li>📊 Federal Reserve Economic Data (FRED)</li>
+                <li>🤖 OpenAI GPT-4o-mini for insights</li>
+                <li>⚡ Cached for 24 hours</li>
+              </ul>
+            </div>
+
+            {/* Technical Info */}
+            <div>
+              <h4 className={`text-sm font-semibold mb-3 ${
+                darkMode ? 'text-white' : 'text-gray-800'
+              }`}>
+                Technical Details
+              </h4>
+              <ul className={`space-y-2 text-sm ${
+                darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>
+                <li>Frontend: React + Vite on Vercel</li>
+                <li>Backend: FastAPI on Render (free tier)</li>
+                <li>Charts: Recharts + Tailwind CSS</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className={`mt-8 pt-6 border-t ${
+            darkMode ? 'border-gray-700' : 'border-gray-200'
+          }`}>
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p className={`text-xs ${
+                darkMode ? 'text-gray-500' : 'text-gray-400'
+              }`}>
+                Built with ❤️ for economic data enthusiasts
+              </p>
+              <p className={`text-xs mt-2 md:mt-0 ${
+                darkMode ? 'text-gray-500' : 'text-gray-400'
+              }`}>
+                Last updated: {new Date().toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
