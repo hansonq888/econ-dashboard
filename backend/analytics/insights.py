@@ -115,7 +115,7 @@ def generate_overall_ai_insight(context: dict, backend_cache=None):
     """
     try:
         if client is None:
-            return "Overall AI insight temporarily unavailable."
+            return "If there are no AI insights it's because I ran out of OpenAI tokens haha"
         
         # Use persistent file-based cache if available
         if backend_cache:
@@ -166,4 +166,4 @@ def generate_overall_ai_insight(context: dict, backend_cache=None):
         return insight
     except Exception as e:
         print(f"OpenAI API error (overall): {e}")
-        return "Overall AI insight temporarily unavailable."
+        return "If there are no AI insights it's because I ran out of OpenAI tokens haha"
