@@ -277,7 +277,7 @@ export default function Dashboard() {
             Data is cached for 24 hours for faster loading
           </p>
           <p className={`text-xs mt-2 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-            ⚡ Using Render backend – first load may take a few seconds
+            ⚡ My backend is on Render (free plan) so it spins down with inactivity – first load may take a few seconds haha
           </p>
           
           {/* Loading Progress */}
@@ -737,7 +737,7 @@ export default function Dashboard() {
                   {overallInsight?.ai_insight ? (
                     <p>{overallInsight.ai_insight}</p>
                   ) : (
-                    <p>Overall AI insight will appear here when available.</p>
+                    <p>If there are no AI insights it's because I ran out of OpenAI tokens haha</p>
                   )}
                 </div>
               ) : (
