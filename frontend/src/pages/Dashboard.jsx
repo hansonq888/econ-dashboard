@@ -236,6 +236,7 @@ export default function Dashboard() {
     }
   }, [showCacheInfo]);
 
+
   if (loading) {
     const series = ["cpi", "unemployment", "fedfunds", "gdp", "pce", "t10y3m"];
     const seriesNames = {
