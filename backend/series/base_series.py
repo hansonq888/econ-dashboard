@@ -64,19 +64,39 @@ class Series:
         #status code 200 means success
         if response.status_code == 200:
             res_data = response.json() # parse json data out
-            # print(res_data.keys())
+            # Check if FRED returned an error in the response
+            if 'error_code' in res_data:
+                error_msg = res_data.get('error_message', f"FRED API error: {res_data.get('error_code')}")
+                print(f"FRED API error for {self.series_id}: {error_msg}")
+                raise ValueError(f"404: {error_msg}")
+            
+            # Check if observations exist
+            if 'observations' not in res_data or len(res_data['observations']) == 0:
+                raise ValueError(f"404: Series not found or no data available for {self.series_id} in date range {self.start_date} to {self.end_date}")
+            
             obs_data = pd.DataFrame(res_data['observations']) # gets data into obs_data
-            # print(res_data['observations'])
             obs_data['date'] = pd.to_datetime(obs_data['date'])
             obs_data.set_index('date', inplace=True)
             # FRED uses '.' for missing values; coerce to NaN then drop
             obs_data['value'] = pd.to_numeric(obs_data['value'], errors='coerce')
             obs_data = obs_data.dropna(subset=['value'])
+            
+            if len(obs_data) == 0:
+                raise ValueError(f"404: Series not found or no valid data for {self.series_id} in date range {self.start_date} to {self.end_date}")
+            
             self.data = obs_data
         else:
-            print("Failed to retrieve data. Status code: ", response.status_code)
-            print("Response text:", response.text)
-            self.data = None
+            error_text = response.text
+            print(f"Failed to retrieve data for {self.series_id}. Status code: {response.status_code}")
+            print(f"Response text: {error_text}")
+            # Try to parse error from FRED
+            try:
+                error_json = response.json()
+                if 'error_message' in error_json:
+                    raise ValueError(f"404: {error_json['error_message']}")
+            except:
+                pass
+            raise ValueError(f"404: Series not found")
 
         return self.data
 

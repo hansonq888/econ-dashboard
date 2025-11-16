@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ChartCard from "../components/ChartCard";
 
 export default function Dashboard() {
@@ -430,6 +431,19 @@ export default function Dashboard() {
               {/* Overall Economic Insight removed here; shown in right sidebar only */}
             </div>
             <div className="flex gap-3">
+              <Link
+                to="/story"
+                className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
+                  darkMode 
+                    ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+              >
+                <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                STORY MODE
+              </Link>
               <button
                 onClick={() => setShowCacheInfo(!showCacheInfo)}
                 className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${

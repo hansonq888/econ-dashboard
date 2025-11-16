@@ -1,0 +1,41 @@
+{
+  "data": {
+    "data": {
+      "realtime_start": {
+        "2000-01-01 00:00:00": "2025-11-16",
+        "2000-04-01 00:00:00": "2025-11-16",
+        "2000-07-01 00:00:00": "2025-11-16",
+        "2000-10-01 00:00:00": "2025-11-16"
+      },
+      "realtime_end": {
+        "2000-01-01 00:00:00": "2025-11-16",
+        "2000-04-01 00:00:00": "2025-11-16",
+        "2000-07-01 00:00:00": "2025-11-16",
+        "2000-10-01 00:00:00": "2025-11-16"
+      },
+      "value": {
+        "2000-01-01 00:00:00": 10002.179,
+        "2000-04-01 00:00:00": 10247.72,
+        "2000-07-01 00:00:00": 10318.165,
+        "2000-10-01 00:00:00": 10435.744
+      }
+    },
+    "trend": {
+      "direction": "upward",
+      "pct_change": 4.33,
+      "volatility": 0.92,
+      "num_peaks": 0,
+      "num_troughs": 0,
+      "latest_value": 10435.744,
+      "earliest_value": 10002.179
+    },
+    "insight": "gdp has been rising Overall, it increased by 4.33% since the start of the selected period. The data appears with steady behavior.\n",
+    "ai_insight": null,
+    "frequency": "q"
+  },
+  "timestamp": 1763309141.327797,
+  "series_name": "gdp",
+  "start_date": "2000-01-01",
+  "end_date": "2000-12-31",
+  "frequency": "q"
+}

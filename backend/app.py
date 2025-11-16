@@ -7,6 +7,7 @@ from backend.series.fed_funds import FedFundsSeries
 from backend.series.gdp import GDPSeries
 from backend.series.pce import PCESeries
 from backend.series.t10y3m import T10Y3MSeries
+from backend.series.nasdaq import NASDAQSeries
 from backend.analytics.trend_analysis import Trendanalyzer
 from backend.analytics.insights import generate_insight, generate_ai_insight, generate_overall_ai_insight
 from backend.cache import backend_cache
@@ -64,7 +65,8 @@ series_map = {
     "fedfunds": FedFundsSeries,
     "gdp": GDPSeries,
     "pce": PCESeries,
-    "t10y3m": T10Y3MSeries
+    "t10y3m": T10Y3MSeries,
+    "nasdaq": NASDAQSeries
 }
 # uvicorn app:app --reload to run application
 # 
@@ -83,9 +85,19 @@ def get_series(series_name: str, start: str, end: str, include_ai: bool = True, 
             cached_data = backend_cache.get(series_name.lower(), start, end, freq)
             if cached_data:
                 print(f"Returning cached data for {series_name}")
+                # For NASDAQ, if cache has data but date range doesn't match exactly, 
+                # we'll return it anyway and let frontend filter
                 return _sanitize_for_json(cached_data)
             else:
-                print(f"No cache found for {series_name}, fetching fresh data")
+                print(f"No cache found for {series_name}")
+                # For NASDAQ, don't try to fetch from FRED if cache is not available
+                # Just return an error so frontend can handle gracefully
+                if series_name.lower() == 'nasdaq':
+                    raise HTTPException(
+                        status_code=404, 
+                        detail=f"NASDAQ data not available in cache for date range {start} to {end}. Please ensure cache file exists."
+                    )
+                print(f"Fetching fresh data for {series_name}")
         
         # Fetch fresh data
         series_class = series_map[series_name.lower()]
@@ -134,9 +146,16 @@ def get_series(series_name: str, start: str, end: str, include_ai: bool = True, 
 
     except Exception as e:
         import traceback
-        print("ERROR:", e)
+        error_msg = str(e)
+        print("ERROR:", error_msg)
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        
+        # Check if it's a FRED API error (404 series not found)
+        if "404" in error_msg or "Series not found" in error_msg:
+            # Return a more helpful error message
+            raise HTTPException(status_code=404, detail=f"Series '{series_name}' not found or data unavailable for the requested date range")
+        
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @app.post("/cache/clear")
 def clear_cache():
