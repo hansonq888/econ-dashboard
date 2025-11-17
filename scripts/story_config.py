@@ -137,6 +137,18 @@ STORIES = {
             "fedfunds": {"class": FedFundsSeries, "frequency": "m"},
             "gdp": {"class": GDPSeries, "frequency": "q"}
         }
+    },
+    "oil_shock": {
+        "title": "1973 Oil Shock & Stagflation",
+        "subtitle": "The End of the Post-War Boom: 1973-1979",
+        "startDate": "1973-01-01",
+        "endDate": "1979-12-31",
+        "series": {
+            "unemployment": {"class": UnemploymentSeries, "frequency": "m"},
+            "cpi": {"class": CPISeries, "frequency": "m"},
+            "fedfunds": {"class": FedFundsSeries, "frequency": "m"},
+            "gdp": {"class": GDPSeries, "frequency": "q"}
+        }
     }
 }
 

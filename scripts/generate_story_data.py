@@ -235,6 +235,31 @@ def generate_volcker_story():
     
     return story_data
 
+def generate_oil_shock_story():
+    """Generate static JSON for 1973 Oil Shock & Stagflation story"""
+    print("\n=== Generating 1973 Oil Shock & Stagflation Story Data ===")
+    
+    story_config = STORIES["oil_shock"]
+    story_data = {
+        "title": story_config["title"],
+        "period": story_config["subtitle"],
+        "startDate": story_config["startDate"],
+        "endDate": story_config["endDate"],
+        "data": {}
+    }
+    
+    # Fetch all series data
+    for series_name, series_config in story_config["series"].items():
+        series_class = series_config["class"]
+        frequency = series_config.get("frequency", "")
+        data = fetch_series_data(
+            series_class, story_config["startDate"], story_config["endDate"], series_name, frequency
+        )
+        if data:
+            story_data["data"][series_name] = data
+    
+    return story_data
+
 def main():
     """Generate all story data files"""
     project_root = Path(__file__).parent.parent
@@ -277,6 +302,18 @@ def main():
         print(f"\n[SUCCESS] Saved Volcker Disinflation data to {volcker_path}")
     except Exception as e:
         print(f"\n[ERROR] Error generating Volcker Disinflation data: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    # Generate 1973 Oil Shock & Stagflation story
+    try:
+        oil_shock_data = generate_oil_shock_story()
+        oil_shock_path = output_dir / "oil_shock.json"
+        with open(oil_shock_path, 'w') as f:
+            json.dump(oil_shock_data, f, indent=2)
+        print(f"\n[SUCCESS] Saved 1973 Oil Shock & Stagflation data to {oil_shock_path}")
+    except Exception as e:
+        print(f"\n[ERROR] Error generating 1973 Oil Shock & Stagflation data: {e}")
         import traceback
         traceback.print_exc()
     

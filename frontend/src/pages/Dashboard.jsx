@@ -431,19 +431,6 @@ export default function Dashboard() {
               {/* Overall Economic Insight removed here; shown in right sidebar only */}
             </div>
             <div className="flex gap-3">
-              <Link
-                to="/story"
-                className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
-                  darkMode 
-                    ? 'bg-purple-600 text-white hover:bg-purple-700' 
-                    : 'bg-purple-600 text-white hover:bg-purple-700'
-                }`}
-              >
-                <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                STORY MODE
-              </Link>
               <button
                 onClick={() => setShowCacheInfo(!showCacheInfo)}
                 className={`px-4 py-2 rounded-xl font-bold transition-all duration-200 text-sm bold-shadow hover-lift ${
@@ -503,6 +490,69 @@ export default function Dashboard() {
                 {darkMode ? 'LIGHT' : 'DARK'}
               </button>
             </div>
+          </div>
+          
+          {/* Story Mode Button - Cinematic Style */}
+          <div className="mt-6">
+            <Link
+              to="/story"
+              className={`group relative block w-full overflow-hidden rounded-2xl transition-all duration-500 hover:scale-[1.02] ${
+                darkMode 
+                  ? 'bg-gradient-to-r from-orange-900/30 via-orange-800/20 to-orange-900/30 backdrop-blur-sm border border-orange-500/30' 
+                  : 'bg-gradient-to-r from-orange-100/50 via-orange-50/30 to-orange-100/50 backdrop-blur-sm border border-orange-300/50'
+              }`}
+              style={{
+                boxShadow: darkMode
+                  ? '0 10px 40px rgba(251, 146, 60, 0.2), 0 0 20px rgba(251, 146, 60, 0.1), inset 0 0 40px rgba(0, 0, 0, 0.1)'
+                  : '0 10px 40px rgba(251, 146, 60, 0.15), 0 0 20px rgba(251, 146, 60, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.1)'
+              }}
+            >
+              {/* Animated gradient overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-r from-orange-600/0 via-orange-500/20 to-orange-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              
+              <div className="relative px-8 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-xl ${
+                      darkMode ? 'bg-orange-500/20' : 'bg-orange-500/10'
+                    }`}>
+                      <svg className="w-6 h-6 text-orange-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className={`text-2xl font-bold mb-1 ${
+                        darkMode 
+                          ? 'bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent' 
+                          : 'bg-gradient-to-r from-orange-600 via-orange-700 to-orange-800 bg-clip-text text-transparent'
+                      }`}>
+                        STORY MODE
+                      </h3>
+                      <p className={`text-sm ${
+                        darkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
+                        Explore major economic events through interactive stories
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-semibold ${
+                      darkMode ? 'text-orange-300' : 'text-orange-700'
+                    }`}>
+                      Explore Stories
+                    </span>
+                    <svg className={`w-5 h-5 group-hover:translate-x-1 transition-transform duration-300 ${
+                      darkMode ? 'text-orange-400' : 'text-orange-600'
+                    }`} fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>

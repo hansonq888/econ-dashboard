@@ -22,6 +22,12 @@ export default function StoryMode() {
       title: "The Volcker Disinflation",
       description: "Discover how Paul Volcker broke the back of inflation through aggressive monetary policy, despite deep recession and high unemployment.",
       year: "1979-1983"
+    },
+    {
+      id: "1973-oil-shock",
+      title: "1973 Oil Shock & Stagflation",
+      description: "Explore how OPEC's oil embargo triggered a period of stagflation - the impossible combination of high inflation and high unemployment that challenged economic orthodoxy.",
+      year: "1973-1979"
     }
   ];
 
